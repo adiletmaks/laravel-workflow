@@ -33,7 +33,7 @@ class EloquentMarkingStore implements MarkingStoreInterface
     {
         $marking = $subject->{$this->property};
 
-        if (!$marking) {
+        if (!$marking && !is_numeric($marking)) {
             return new Marking();
         }
 
