@@ -6,11 +6,11 @@ use Tests\Fixtures\TestObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\StateMachine;
-use ZeroDaHero\LaravelWorkflow\WorkflowRegistry;
+use Adiletmaks\LaravelWorkflow\WorkflowRegistry;
 use Symfony\Component\Workflow\MarkingStore\SingleStateMarkingStore;
-use ZeroDaHero\LaravelWorkflow\Exceptions\DuplicateWorkflowException;
+use Adiletmaks\LaravelWorkflow\Exceptions\DuplicateWorkflowException;
 use Symfony\Component\Workflow\MarkingStore\MultipleStateMarkingStore;
-use ZeroDaHero\LaravelWorkflow\Exceptions\RegistryNotTrackedException;
+use Adiletmaks\LaravelWorkflow\Exceptions\RegistryNotTrackedException;
 
 class WorkflowTrackingTest extends TestCase
 {

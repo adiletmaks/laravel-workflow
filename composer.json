@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ZeroDaHero\\LaravelWorkflow\\": "src/"
+            "Adiletmaks\\LaravelWorkflow\\": "src/"
         }
     },
     "autoload-dev": {
@@ -28,10 +28,10 @@
         },
         "laravel": {
             "providers": [
-                "ZeroDaHero\\LaravelWorkflow\\WorkflowServiceProvider"
+                "Adiletmaks\\LaravelWorkflow\\WorkflowServiceProvider"
             ],
             "aliases": {
-                "Workflow": "ZeroDaHero\\LaravelWorkflow\\Facades\\WorkflowFacade"
+                "Workflow": "Adiletmaks\\LaravelWorkflow\\Facades\\WorkflowFacade"
             }
         }
     },

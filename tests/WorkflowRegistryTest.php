@@ -7,9 +7,9 @@ use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\TestCustomObject;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\StateMachine;
-use ZeroDaHero\LaravelWorkflow\WorkflowRegistry;
+use Adiletmaks\LaravelWorkflow\WorkflowRegistry;
 use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
-use ZeroDaHero\LaravelWorkflow\MarkingStores\EloquentMarkingStore;
+use Adiletmaks\LaravelWorkflow\MarkingStores\EloquentMarkingStore;
 use Illuminate\Support\Facades\Event;
 
 class WorkflowRegistryTest extends BaseWorkflowTestCase

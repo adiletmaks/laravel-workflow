@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow\Events;
+namespace Adiletmaks\LaravelWorkflow\Events;
 
 use Serializable;
 use Symfony\Component\Workflow\Event\Event;

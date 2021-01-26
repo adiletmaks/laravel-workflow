@@ -7,7 +7,7 @@ use Tests\Fixtures\TestObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Component\Workflow\StateMachine;
-use ZeroDaHero\LaravelWorkflow\WorkflowRegistry;
+use Adiletmaks\LaravelWorkflow\WorkflowRegistry;
 use Symfony\Component\Workflow\MarkingStore\SingleStateMarkingStore;
 use Symfony\Component\Workflow\MarkingStore\MultipleStateMarkingStore;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow\Commands;
+namespace Adiletmaks\LaravelWorkflow\Commands;
 
 use Config;
 use Workflow;

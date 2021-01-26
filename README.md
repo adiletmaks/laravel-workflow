@@ -1,4 +1,4 @@
-# Laravel workflow [![Build Status](https://travis-ci.org/zerodahero/laravel-workflow.svg?branch=master)](https://travis-ci.org/zerodahero/laravel-workflow)
+# Laravel workflow
 
 This is a fork from [brexis/laravel-workflow](https://github.com/brexis/laravel-workflow). My current needs for this package are a bit more bleeding-edge than seem to be maintainable by the other packages. Massive kudos to brexis for the original work and adaptation on this.
 
@@ -6,7 +6,7 @@ Use the Symfony Workflow component in Laravel
 
 ## Installation
 
-    composer require zerodahero/laravel-workflow
+    composer require adlietmaks/laravel-workflow
 
 ## Laravel Support
 
@@ -35,7 +35,7 @@ Add a ServiceProvider to your providers array in `config/app.php`:
 
 'providers' => [
     ...
-    ZeroDaHero\LaravelWorkflow\WorkflowServiceProvider::class,
+    Adiletmaks\LaravelWorkflow\WorkflowServiceProvider::class,
 
 ]
 ```
@@ -45,7 +45,7 @@ Add the `Workflow` facade to your facades array:
 ```php
 <?php
     ...
-    'Workflow' => ZeroDaHero\LaravelWorkflow\Facades\WorkflowFacade::class,
+    'Workflow' => Adiletmaks\LaravelWorkflow\Facades\WorkflowFacade::class,
 ```
 
 ## Configuration
@@ -53,7 +53,7 @@ Add the `Workflow` facade to your facades array:
 Publish the config file
 
 ```
-    php artisan vendor:publish --provider="ZeroDaHero\LaravelWorkflow\WorkflowServiceProvider"
+    php artisan vendor:publish --provider="Adiletmaks\LaravelWorkflow\WorkflowServiceProvider"
 ```
 
 Configure your workflow in `config/workflow.php`
@@ -147,7 +147,7 @@ Use the `WorkflowTrait` inside supported classes
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use ZeroDaHero\LaravelWorkflow\Traits\WorkflowTrait;
+use Adiletmaks\LaravelWorkflow\Traits\WorkflowTrait;
 
 class BlogPost extends Model
 {
@@ -228,11 +228,11 @@ $otherPlaceMetadata = $workflow->getMetadataStore()->getMetadata('max_num_of_wor
 This package provides a list of events fired during a transition
 
 ```php
-    ZeroDaHero\LaravelWorkflow\Events\Guard
-    ZeroDaHero\LaravelWorkflow\Events\Leave
-    ZeroDaHero\LaravelWorkflow\Events\Transition
-    ZeroDaHero\LaravelWorkflow\Events\Enter
-    ZeroDaHero\LaravelWorkflow\Events\Entered
+    Adiletmaks\LaravelWorkflow\Events\Guard
+    Adiletmaks\LaravelWorkflow\Events\Leave
+    Adiletmaks\LaravelWorkflow\Events\Transition
+    Adiletmaks\LaravelWorkflow\Events\Enter
+    Adiletmaks\LaravelWorkflow\Events\Entered
 ```
 
 You can subscribe to an event
@@ -242,7 +242,7 @@ You can subscribe to an event
 
 namespace App\Listeners;
 
-use ZeroDaHero\LaravelWorkflow\Events\GuardEvent;
+use Adiletmaks\LaravelWorkflow\Events\GuardEvent;
 
 class BlogPostWorkflowSubscriber
 {
@@ -298,27 +298,27 @@ class BlogPostWorkflowSubscriber
     public function subscribe($events)
     {
         $events->listen(
-            'ZeroDaHero\LaravelWorkflow\Events\GuardEvent',
+            'Adiletmaks\LaravelWorkflow\Events\GuardEvent',
             'App\Listeners\BlogPostWorkflowSubscriber@onGuard'
         );
 
         $events->listen(
-            'ZeroDaHero\LaravelWorkflow\Events\LeaveEvent',
+            'Adiletmaks\LaravelWorkflow\Events\LeaveEvent',
             'App\Listeners\BlogPostWorkflowSubscriber@onLeave'
         );
 
         $events->listen(
-            'ZeroDaHero\LaravelWorkflow\Events\TransitionEvent',
+            'Adiletmaks\LaravelWorkflow\Events\TransitionEvent',
             'App\Listeners\BlogPostWorkflowSubscriber@onTransition'
         );
 
         $events->listen(
-            'ZeroDaHero\LaravelWorkflow\Events\EnterEvent',
+            'Adiletmaks\LaravelWorkflow\Events\EnterEvent',
             'App\Listeners\BlogPostWorkflowSubscriber@onEnter'
         );
 
         $events->listen(
-            'ZeroDaHero\LaravelWorkflow\Events\EnteredEvent',
+            'Adiletmaks\LaravelWorkflow\Events\EnteredEvent',
             'App\Listeners\BlogPostWorkflowSubscriber@onEntered'
         );
     }
@@ -335,7 +335,7 @@ NOTE: these events receive the Symfony event prior to version 3.1.1, and will re
 
 namespace App\Listeners;
 
-use ZeroDaHero\LaravelWorkflow\Events\GuardEvent;
+use Adiletmaks\LaravelWorkflow\Events\GuardEvent;
 
 class BlogPostWorkflowSubscriber
 {

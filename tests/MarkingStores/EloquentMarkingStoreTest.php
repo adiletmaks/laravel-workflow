@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Workflow\Marking;
 use Tests\Fixtures\TestModel;
 use Tests\Fixtures\TestModelMutator;
-use ZeroDaHero\LaravelWorkflow\MarkingStores\EloquentMarkingStore;
+use Adiletmaks\LaravelWorkflow\MarkingStores\EloquentMarkingStore;
 
 class EloquentMarkingStoreTest extends TestCase
 {
