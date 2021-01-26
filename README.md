@@ -4,12 +4,29 @@ This is a fork from [brexis/laravel-workflow](https://github.com/brexis/laravel-
 
 Use the Symfony Workflow component in Laravel
 
-### Installation
+## Installation
 
     composer require zerodahero/laravel-workflow
 
-#### Right now, I've bumped the dependencies up to active PHP version (>=7.2), so in Laravel >= 5.5, use the package auto-discovery
-#### For laravel <= 5.4 (Deprecated)
+## Laravel Support
+
+| Package Version | Laravel Version Support |
+| --- | --- |
+| ^2.0 | 5.x |
+| ^3.0 | 7.x |
+| ^3.2 | 8.x |
+
+## Upgrade from v2 to v3
+
+The biggest changes from v2 to v3 are the dependencies. To match the Symfony v5 components, the Laravel version is raised to v7. If you're on Laravel v6 or earlier, you should continue to use the v2 releases of this package.
+
+To match the changes in the Symfony v5 workflow component, the "arguments" config option has been changed to "property". This describes the property on the model the workflow ties to (in most circumstances, you can simply change the key name from "arguments" to "property", and set to a string instead of the previous array).
+
+Also, the "initial_place" key has been changed to "initial_places" to align with the Symfony component as well.
+
+### Non-package Discovery
+
+If you aren't using package discovery:
 
 Add a ServiceProvider to your providers array in `config/app.php`:
 
@@ -31,7 +48,7 @@ Add the `Workflow` facade to your facades array:
     'Workflow' => ZeroDaHero\LaravelWorkflow\Facades\WorkflowFacade::class,
 ```
 
-### Configuration
+## Configuration
 
 Publish the config file
 
@@ -45,26 +62,27 @@ Configure your workflow in `config/workflow.php`
 <?php
 
 return [
-    'straight'   => [
-        'type'          => 'workflow', // or 'state_machine'
+    'straight' => [
+        'type' => 'workflow', // or 'state_machine'
         'marking_store' => [
-            'type'      => 'multiple_state',
-            'arguments' => ['currentPlace']
+            'type' => 'multiple_state', // or 'single_state'
+            'property' => 'currentPlace', // this is the property on the model
+            'class' => MethodMarkingStore::class, // you may omit for default, or set to override marking store class
         ],
-        'supports'      => ['App\BlogPost'],
-        'places'        => ['draft', 'review', 'rejected', 'published'],
-        'transitions'   => [
+        'supports' => ['App\BlogPost'],
+        'places' => ['draft', 'review', 'rejected', 'published'],
+        'transitions' => [
             'to_review' => [
                 'from' => 'draft',
-                'to'   => 'review'
+                'to' => 'review'
             ],
             'publish' => [
                 'from' => 'review',
-                'to'   => 'published'
+                'to' => 'published'
             ],
             'reject' => [
                 'from' => 'review',
-                'to'   => 'rejected'
+                'to' => 'rejected'
             ]
         ],
     ]
@@ -80,18 +98,18 @@ You may also add in metadata, similar to the Symfony implementation (note: it is
 <?php
 
 return [
-    'straight'   => [
-        'type'          => 'workflow', // or 'state_machine'
-        'metadata'      => [
+    'straight' => [
+        'type' => 'workflow', // or 'state_machine'
+        'metadata' => [
             'title' => 'Blog Publishing Workflow',
         ],
         'marking_store' => [
-            'type'      => 'multiple_state',
-            'arguments' => ['currentPlace']
+            'type' => 'multiple_state', // or 'single_state'
+            'property' => 'currentPlace' // this is the property on the model
         ],
-        'supports'      => ['App\BlogPost'],
-        'places'        => [
-            'draft', => [
+        'supports' => ['App\BlogPost'],
+        'places' => [
+            'draft' => [
                 'metadata' => [
                     'max_num_of_words' => 500,
                 ]
@@ -100,21 +118,21 @@ return [
             'rejected',
             'published'
         ],
-        'transitions'   => [
+        'transitions' => [
             'to_review' => [
                 'from' => 'draft',
-                'to'   => 'review',
+                'to' => 'review',
                 'metadata' => [
                     'priority' => 0.5,
                 ]
             ],
             'publish' => [
                 'from' => 'review',
-                'to'   => 'published'
+                'to' => 'published'
             ],
             'reject' => [
                 'from' => 'review',
-                'to'   => 'rejected'
+                'to' => 'rejected'
             ]
         ],
     ]
@@ -137,7 +155,7 @@ class BlogPost extends Model
 
 }
 ```
-### Usage
+## Usage
 
 ```php
 <?php
@@ -178,8 +196,8 @@ $post->workflow_apply('publish');
 $post->save();
 ```
 
-### Symfony Workflow Usage
-Once you have the underlying Symfony workflow component, you can do anything you want, just like you would in Symfony. A couple examples are provided below, but be sure to take a look at the [Symfony docs](https://symfony.com/doc/current/workflow.html) to better understand what's going on here. 
+## Symfony Workflow Usage
+Once you have the underlying Symfony workflow component, you can do anything you want, just like you would in Symfony. A couple examples are provided below, but be sure to take a look at the [Symfony docs](https://symfony.com/doc/current/workflow.html) to better understand what's going on here.
 
 ```php
 <?php
@@ -231,7 +249,8 @@ class BlogPostWorkflowSubscriber
     /**
      * Handle workflow guard events.
      */
-    public function onGuard(GuardEvent $event) {
+    public function onGuard(GuardEvent $event)
+    {
         /** Symfony\Component\Workflow\Event\GuardEvent */
         $originalEvent = $event->getOriginalEvent();
 
@@ -248,7 +267,13 @@ class BlogPostWorkflowSubscriber
     /**
      * Handle workflow leave event.
      */
-    public function onLeave($event) {}
+    public function onLeave($event)
+    {
+        // The event can also proxy to the original event
+        $subject = $event->getSubject();
+        // is the same as:
+        $subject = $event->getOriginalEvent()->getSubject();
+    }
 
     /**
      * Handle workflow transition event.
@@ -301,7 +326,9 @@ class BlogPostWorkflowSubscriber
 }
 ```
 
-You are also welcome to use [Symfony's dot syntax style of event emission](https://symfony.com/doc/current/workflow.html#using-events). Note that the events will receive the Symfony events then, not the ones through this package.
+You are also welcome to use [Symfony's dot syntax style of event emission](https://symfony.com/doc/current/workflow.html#using-events).
+
+NOTE: these events receive the Symfony event prior to version 3.1.1, and will receive this package's events starting with version 3.1.1
 
 ```php
 <?php
@@ -328,7 +355,7 @@ class BlogPostWorkflowSubscriber
         $events->listen(
             'workflow.straight.guard',
             'App\Listeners\BlogPostWorkflowSubscriber@onGuard'
-        );        
+        );
 
         // workflow.leave
         // workflow.[workflow name].leave
@@ -381,7 +408,100 @@ class BlogPostWorkflowSubscriber
 }
 ```
 
-### Dump Workflows
+## Workflow vs State Machine
+
+When using a multi-state workflow, it becomes necessary to distinguish between an array of multiple places that can transition to one place, or a situation where a subject in exactly multiple places transitions to one. Since the config is a PHP array, you must "nest" the latter situation into an array, so that it builds a transition using an array of places, rather that looping through single places.
+
+### Example 1. Exactly two places transition to one
+
+In this example, a draft must be in both `content_approved` and `legal_approved` at the same time
+
+```php
+<?php
+
+return [
+    'straight' => [
+        'type' => 'workflow',
+        'metadata' => [
+            'title' => 'Blog Publishing Workflow',
+        ],
+        'marking_store' => [
+            'type' => 'multiple_state',
+            'property' => 'currentPlace'
+        ],
+        'supports' => ['App\BlogPost'],
+        'places' => [
+            'draft',
+            'content_review',
+            'content_approved',
+            'legal_review',
+            'legal_approved',
+            'published'
+        ],
+        'transitions' => [
+            'to_review' => [
+                'from' => 'draft',
+                'to' => ['content_review', 'legal_review'],
+            ],
+            // ... transitions to "approved" states here
+            'publish' => [
+                'from' => [ // note array in array
+                    ['content_review', 'legal_review']
+                ],
+                'to' => 'published'
+            ],
+            // ...
+        ],
+    ]
+];
+```
+
+### Example 2. Either of two places transition to one
+
+In this example, a draft can transition from EITHER `content_approved` OR `legal_approved` to `published`
+
+```php
+<?php
+
+return [
+    'straight' => [
+        'type' => 'workflow',
+        'metadata' => [
+            'title' => 'Blog Publishing Workflow',
+        ],
+        'marking_store' => [
+            'type' => 'multiple_state',
+            'property' => 'currentPlace'
+        ],
+        'supports' => ['App\BlogPost'],
+        'places' => [
+            'draft',
+            'content_review',
+            'content_approved',
+            'legal_review',
+            'legal_approved',
+            'published'
+        ],
+        'transitions' => [
+            'to_review' => [
+                'from' => 'draft',
+                'to' => ['content_review', 'legal_review'],
+            ],
+            // ... transitions to "approved" states here
+            'publish' => [
+                'from' => [
+                    'content_review',
+                    'legal_review'
+                ],
+                'to' => 'published'
+            ],
+            // ...
+        ],
+    ]
+];
+```
+
+## Dump Workflows
 Symfony workflow uses GraphvizDumper to create the workflow image. You may need to install the `dot` command of [Graphviz](http://www.graphviz.org/)
 
     php artisan workflow:dump workflow_name --class App\\BlogPost
@@ -390,7 +510,7 @@ You can change the image format with the `--format` option. By default the forma
 
     php artisan workflow:dump workflow_name --format=jpg
 
-### Use in tracking mode
+## Use in tracking mode
 
 If you are loading workflow definitions through some dynamic means (perhaps via DB), you'll most likely want to turn on registry tracking. This will enable you to see what has been loaded, to prevent or ignore duplicate workflow definitions.
 
@@ -410,7 +530,7 @@ return [
 
     /**
      * Only used when track_loaded = true
-     * 
+     *
      * When set to true, a registering a duplicate workflow will be ignored (will not load the new definition)
      * When set to false, a duplicate workflow will throw a DuplicateWorkflowException
      */
@@ -434,6 +554,9 @@ You can dynamically load a workflow by using the `addFromArray` method on the wo
         $workflowDefinition = [
             // Workflow definition here
             // (same format as config/symfony docs)
+            // This should be the definition only,
+            // not including the key for the name.
+            // See note below on initial_places for an example.
         ];
 
         $registry->addFromArray($workflowName, $workflowDefinition);
@@ -443,27 +566,29 @@ You can dynamically load a workflow by using the `addFromArray` method on the wo
         try {
             $registry->addFromArray($workflowName, $workflowDefinition);
         } catch (DuplicateWorkflowException $e) {
-            // already loaded 
+            // already loaded
         }
     }
 ```
 
-You may also specify an `initial_place` in your workflow definition, if it is not the first place in the "places" list.
+NOTE: There's no persistence for dynamic workflows, this package assumes you're storing those somehow (DB, etc). To use the dynamic workflows, you will need to load the workflow prior to using it. The `loadWorkflow()` method above could be tied into a model `boot()` or similar.
+
+You may also specify an `initial_places` in your workflow definition, if it is not the first place in the "places" list.
 
 ```php
 <?php
 
 return [
-    'type'          => 'workflow', // or 'state_machine'
-    'metadata'      => [
+    'type' => 'workflow', // or 'state_machine'
+    'metadata' => [
         'title' => 'Blog Publishing Workflow',
     ],
     'marking_store' => [
-        'type'      => 'multiple_state',
-        'arguments' => ['currentPlace']
+        'type' => 'multiple_state',
+        'property' => 'currentPlace'
     ],
-    'supports'      => ['App\BlogPost'],
-    'places'        => [
+    'supports' => ['App\BlogPost'],
+    'places' => [
         'review',
         'rejected',
         'published',
@@ -473,22 +598,22 @@ return [
             ]
         ]
     ],
-    'initial_place' => 'draft',
-    'transitions'   => [
+    'initial_places' => 'draft', // or set to an array if multiple initial places
+    'transitions' => [
         'to_review' => [
             'from' => 'draft',
-            'to'   => 'review',
+            'to' => 'review',
             'metadata' => [
                 'priority' => 0.5,
             ]
         ],
         'publish' => [
             'from' => 'review',
-            'to'   => 'published'
+            'to' => 'published'
         ],
         'reject' => [
             'from' => 'review',
-            'to'   => 'rejected'
+            'to' => 'rejected'
         ]
     ],
 ];

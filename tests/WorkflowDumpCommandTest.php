@@ -1,15 +1,36 @@
 <?php
-namespace Tests {
 
-    use ZeroDaHero\LaravelWorkflow\Commands\WorkflowDumpCommand;
-    use Mockery;
-    use PHPUnit\Framework\TestCase;
+namespace Tests;
 
-    class WorkflowDumpCommandTest extends TestCase
+use ZeroDaHero\LaravelWorkflow\Commands\WorkflowDumpCommand;
+use Mockery;
+use Illuminate\Support\Facades\Storage;
+
+class WorkflowDumpCommandTest extends BaseWorkflowTestCase
+{
+    protected function getEnvironmentSetUp($app)
     {
-        public function testShouldThrowExceptionForUndefinedWorkflow()
-        {
-            $command = Mockery::mock(WorkflowDumpCommand::class)
+        $app['config']['workflow'] = [
+            'straight' => [
+                'supports' => ['Tests\Fixtures\TestObject'],
+                'places' => ['a', 'b', 'c'],
+                'transitions' => [
+                    't1' => [
+                        'from' => 'a',
+                        'to' => 'b',
+                    ],
+                    't2' => [
+                        'from' => 'b',
+                        'to' => 'c',
+                    ]
+                ],
+            ]
+        ];
+    }
+
+    public function testShouldThrowExceptionForUndefinedWorkflow()
+    {
+        $command = Mockery::mock(WorkflowDumpCommand::class)
             ->makePartial()
             ->shouldReceive('argument')
             ->with('workflow')
@@ -20,16 +41,22 @@ namespace Tests {
             ->shouldReceive('option')
             ->with('class')
             ->andReturn('Tests\Fixtures\TestObject')
+            ->shouldReceive('option')
+            ->with('disk')
+            ->andReturn('local')
+            ->shouldReceive('option')
+            ->with('path')
+            ->andReturn('/')
             ->getMock();
 
-            $this->expectException(\Exception::class);
-            $this->expectExceptionMessage('Workflow fake is not configured.');
-            $command->handle();
-        }
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Workflow fake is not configured.');
+        $command->handle();
+    }
 
-        public function testShouldThrowExceptionForUndefinedClass()
-        {
-            $command = Mockery::mock(WorkflowDumpCommand::class)
+    public function testShouldThrowExceptionForUndefinedClass()
+    {
+        $command = Mockery::mock(WorkflowDumpCommand::class)
             ->makePartial()
             ->shouldReceive('argument')
             ->with('workflow')
@@ -40,22 +67,34 @@ namespace Tests {
             ->shouldReceive('option')
             ->with('class')
             ->andReturn('Tests\Fixtures\FakeObject')
+            ->shouldReceive('option')
+            ->with('disk')
+            ->andReturn('local')
+            ->shouldReceive('option')
+            ->with('path')
+            ->andReturn('/')
             ->getMock();
 
-            $this->expectException(\Exception::class);
-            $this->expectExceptionMessage('Workflow straight has no support for'.
-            ' class Tests\Fixtures\FakeObject. Please specify a valid support'.
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Workflow straight has no support for' .
+            ' class Tests\Fixtures\FakeObject. Please specify a valid support' .
             ' class with the --class option.');
-            $command->handle();
+        $command->handle();
+    }
+
+    public function testWorkflowCommand()
+    {
+
+        $optionalPath = '/my/path';
+        $disk = 'public';
+
+        Storage::fake($disk);
+
+        if (Storage::disk($disk)->exists($optionalPath.'/straight.png')) {
+            Storage::disk($disk)->delete($optionalPath.'/straight.png');
         }
 
-        public function testWorkflowCommand()
-        {
-            if (file_exists('straight.png')) {
-                unlink('straight.png');
-            }
-
-            $command = Mockery::mock(WorkflowDumpCommand::class)
+        $command = Mockery::mock(WorkflowDumpCommand::class)
             ->makePartial()
             ->shouldReceive('argument')
             ->with('workflow')
@@ -66,54 +105,16 @@ namespace Tests {
             ->shouldReceive('option')
             ->with('class')
             ->andReturn('Tests\Fixtures\TestObject')
+            ->shouldReceive('option')
+            ->with('disk')
+            ->andReturn($disk)
+            ->shouldReceive('option')
+            ->with('path')
+            ->andReturn($optionalPath)
             ->getMock();
 
-            $command->handle();
+        $command->handle();
 
-            $this->assertTrue(file_exists('straight.png'));
-        }
-    }
-}
-
-namespace {
-    use ZeroDaHero\LaravelWorkflow\WorkflowRegistry;
-
-    $config = [
-    'straight'   => [
-        'supports'      => ['Tests\Fixtures\TestObject'],
-        'places'        => ['a', 'b', 'c'],
-        'transitions'   => [
-            't1' => [
-                'from' => 'a',
-                'to'   => 'b',
-            ],
-            't2' => [
-                'from' => 'b',
-                'to'   => 'c',
-            ]
-        ],
-    ]
-    ];
-
-    class Workflow
-    {
-        public static function get($object, $name)
-        {
-            global $config;
-
-            $workflowRegistry = new WorkflowRegistry($config);
-
-            return $workflowRegistry->get($object, $name);
-        }
-    }
-
-    class Config
-    {
-        public static function get($name)
-        {
-            global $config;
-
-            return $config;
-        }
+        Storage::disk($disk)->assertExists($optionalPath.'/straight.png');
     }
 }
