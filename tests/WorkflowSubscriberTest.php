@@ -3,14 +3,14 @@
 namespace Tests;
 
 use Illuminate\Support\Facades\Event;
-use ZeroDaHero\LaravelWorkflow\Events\AnnounceEvent;
-use ZeroDaHero\LaravelWorkflow\Events\CompletedEvent;
-use ZeroDaHero\LaravelWorkflow\Events\EnteredEvent;
-use ZeroDaHero\LaravelWorkflow\Events\EnterEvent;
-use ZeroDaHero\LaravelWorkflow\Events\GuardEvent;
-use ZeroDaHero\LaravelWorkflow\Events\LeaveEvent;
-use ZeroDaHero\LaravelWorkflow\Events\TransitionEvent;
-use ZeroDaHero\LaravelWorkflow\WorkflowRegistry;
+use Adiletmaks\LaravelWorkflow\Events\AnnounceEvent;
+use Adiletmaks\LaravelWorkflow\Events\CompletedEvent;
+use Adiletmaks\LaravelWorkflow\Events\EnteredEvent;
+use Adiletmaks\LaravelWorkflow\Events\EnterEvent;
+use Adiletmaks\LaravelWorkflow\Events\GuardEvent;
+use Adiletmaks\LaravelWorkflow\Events\LeaveEvent;
+use Adiletmaks\LaravelWorkflow\Events\TransitionEvent;
+use Adiletmaks\LaravelWorkflow\WorkflowRegistry;
 use Tests\Fixtures\TestObject;
 
 class WorkflowSubscriberTest extends BaseWorkflowTestCase

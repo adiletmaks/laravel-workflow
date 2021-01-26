@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use ZeroDaHero\LaravelWorkflow\Commands\WorkflowDumpCommand;
+use Adiletmaks\LaravelWorkflow\Commands\WorkflowDumpCommand;
 use Mockery;
 use Illuminate\Support\Facades\Storage;
 

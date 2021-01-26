@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow\Events;
+namespace Adiletmaks\LaravelWorkflow\Events;
 
 /**
  * @author Peter Sweets <p.sweets@developers.nl>

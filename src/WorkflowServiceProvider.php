@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow;
+namespace Adiletmaks\LaravelWorkflow;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -10,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 class WorkflowServiceProvider extends ServiceProvider
 {
     protected $commands = [
-        'ZeroDaHero\LaravelWorkflow\Commands\WorkflowDumpCommand',
+        'Adiletmaks\LaravelWorkflow\Commands\WorkflowDumpCommand',
     ];
 
     /**

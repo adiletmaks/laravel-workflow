@@ -3,8 +3,8 @@
 namespace Tests;
 
 use Orchestra\Testbench\TestCase;
-use ZeroDaHero\LaravelWorkflow\WorkflowServiceProvider;
-use ZeroDaHero\LaravelWorkflow\Facades\WorkflowFacade;
+use Adiletmaks\LaravelWorkflow\WorkflowServiceProvider;
+use Adiletmaks\LaravelWorkflow\Facades\WorkflowFacade;
 
 class BaseWorkflowTestCase extends TestCase
 {

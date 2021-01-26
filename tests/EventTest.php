@@ -5,9 +5,9 @@ namespace Tests;
 use Workflow;
 use Tests\Fixtures\TestModel;
 use Orchestra\Testbench\TestCase;
-use ZeroDaHero\LaravelWorkflow\Events\TransitionEvent;
-use ZeroDaHero\LaravelWorkflow\Facades\WorkflowFacade;
-use ZeroDaHero\LaravelWorkflow\WorkflowServiceProvider;
+use Adiletmaks\LaravelWorkflow\Events\TransitionEvent;
+use Adiletmaks\LaravelWorkflow\Facades\WorkflowFacade;
+use Adiletmaks\LaravelWorkflow\WorkflowServiceProvider;
 
 /**
  * @group integration

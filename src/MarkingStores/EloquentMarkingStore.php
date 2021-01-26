@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow\MarkingStores;
+namespace Adiletmaks\LaravelWorkflow\MarkingStores;
 
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Exception\LogicException;

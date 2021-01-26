@@ -1,6 +1,6 @@
 <?php
 
-namespace ZeroDaHero\LaravelWorkflow\Facades;
+namespace Adiletmaks\LaravelWorkflow\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
