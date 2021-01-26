@@ -1,5 +1,5 @@
 {
-    "name": "zerodahero/laravel-workflow",
+    "name": "adiletmaks/laravel-workflow",
     "description": "Integerate Symfony Workflow component into Laravel.",
     "keywords": ["workflow", "symfony", "laravel", "laravel7", "laravel8"],
     "license": "MIT",
